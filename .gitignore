@@ -3,6 +3,7 @@
 ipch
 temp
 Debug
+Lists of.52F91905.tlog
 
 # VS file
 *.aps
@@ -18,6 +19,10 @@ Debug
 *.lo
 *.o
 *.obj
+*.iobj
+*.ipdb
+*.pdb
+*.log
 
 # Precompiled Headers
 *.gch
@@ -39,6 +44,5 @@ Debug
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
