@@ -5,12 +5,11 @@
 
 int main()
 {
-   
 	cout << "Please input absolute path of folder." << endl;
 	string path_name;
 	cin >> path_name;
 	int nRet = files_Listing(path_name);//"D:\\github\\spotlight_pic"
-	switch (nRet)	
+	switch (nRet)
 	{
 	case -2://folder not correct
 	{
@@ -27,7 +26,7 @@ int main()
 		cout << "Folder is completely empty." << endl;
 		break;
 	}
-	case 1://normally run 
+	case 1://normally run
 	{
 		cout << "Output completed." << endl;
 		break;
@@ -80,7 +79,7 @@ int files_Listing(string folder_name)
 		file_op.open(File_list, ios::out | ios::app);
 		bool operation_sign = md_fileoperation(1, file_op);
 	}
-	//	
+	//
 	do
 	{
 		string attribute;
@@ -201,4 +200,3 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	}
 	return nRet;
 }
-
