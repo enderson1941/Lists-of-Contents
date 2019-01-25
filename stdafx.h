@@ -27,7 +27,3 @@ using namespace std;
 #include "conio.h"
 #include "ctime"
 #include "map"
-
-int files_Listing(string folder_name);
-
-bool md_fileoperation(int op, fstream& file_operation, string content = "");

@@ -3,12 +3,20 @@
 
 #include "stdafx.h"
 
+int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_mode = 0);
+
+bool md_fileoperation(int op, fstream& file_operation, string content = "");
+
+
+
 int main()
 {
 	cout << "Please input absolute path of folder." << endl;
 	string path_name;
 	cin >> path_name;
-	int nRet = files_Listing(path_name);//"D:\\github\\spotlight_pic"
+	fstream file_op(path_name);
+	int files_cnt = 0;
+	int nRet = files_Listing(path_name, files_cnt, file_op);//D:\github\spotlight_pic  D:\github\test
 	switch (nRet)
 	{
 	case -2://folder not correct
@@ -16,17 +24,12 @@ int main()
 		cout << "Folder Path is not correctly input." << endl;
 		break;
 	}
-	case -1://no files in folder
+	case -1://file access failed
 	{
-		cout << "Folder is completely empty." << endl;
+		cout << "Files involved can not be accessed to correctly." << endl;
 		break;
 	}
-	case 0:////no files in folder
-	{
-		cout << "Folder is completely empty." << endl;
-		break;
-	}
-	case 1://normally run
+	case 0://normally run
 	{
 		cout << "Output completed." << endl;
 		break;
@@ -34,50 +37,58 @@ int main()
 	default:
 		break;
 	}
+	md_fileoperation(3, file_op, to_string(files_cnt));
+	
 	system("pause");
 	return 0;
 }
 
-int files_Listing(string folder_name)
+int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_mode)
 {
-	int nRet = 1;
+	int nRet =0;
 	if (_access(folder_name.c_str(), 0) == -1)
 	{
 		nRet = -2;
 		return nRet;
 	}
-	int files_cnt = 0;
+	//define
+	vector<string> _extension1{ "jpg", "png", "pdf", "bmp", "gif", "tif", "Tiff", "psd" };
+	vector<string> _extension2{ "mp4", "avi", "mkv", "m2ts", "iso", 
+		"rmvb", "RMVB", "fov", "flv", "rm", "RM"};
 	const double unit1 = 1024.0f;//KB
 	const double unit2 = 1024.0f * 1024.0f;//MB
 	const double unit3 = 1024.0f * 1024.0f * 1024.0f;//GB
 	double file_size;
 	_finddata_t file_info;
-	fstream file_op;
-	string current_path = folder_name + "\\*.*";
 	string thumbnail = folder_name;
+	string current_path = folder_name + "\\*.*";
 	intptr_t handle = _findfirst(current_path.c_str(), &file_info);
 	if (-1 == handle)
 	{
 		nRet = -1;
 		return nRet;
 	}
-	if (_access("Output", 0) == -1)//New
-	{
-		::CreateDirectory(L"Output", NULL);
-	}
-	folder_name.erase(folder_name.begin(), folder_name.begin() +
-		folder_name.find_last_of('\\') + 1);
-	string File_list = string("Output\\") + folder_name + string(".md");
 	//
-	if (_access(File_list.c_str(), 0) == -1)//New
+	if (!op_mode)
 	{
-		file_op.open(File_list, ios::out | ios::app);
-		bool operation_sign = md_fileoperation(0, file_op, folder_name);
-	}
-	else
-	{
-		file_op.open(File_list, ios::out | ios::app);
-		bool operation_sign = md_fileoperation(1, file_op);
+		if (_access("Output", 0) == -1)//new
+		{
+			::CreateDirectory(L"Output", NULL);
+		}
+		folder_name.erase(folder_name.begin(), folder_name.begin() +
+			folder_name.find_last_of('\\') + 1);
+		string File_list = string("Output\\") + folder_name + string(".md");
+		file_op.close();
+		if (_access(File_list.c_str(), 0) == -1)//create
+		{
+			file_op.open(File_list, ios::out | ios::app);
+			bool operation_sign = md_fileoperation(0, file_op, folder_name);
+		}
+		else
+		{
+			file_op.open(File_list, ios::out | ios::app);
+			bool operation_sign = md_fileoperation(1, file_op);
+		}
 	}
 	//
 	do
@@ -86,12 +97,21 @@ int files_Listing(string folder_name)
 		string unit;
 		string content;
 		ostringstream buffer;
+		string iden = file_info.name;
+		if (iden ==  "." || iden == "..")
+		{
+			continue;
+		}
 		if (file_info.attrib == _A_SUBDIR)
+		{
 			attribute = "dir";
+			files_Listing(thumbnail + "\\" + iden, files_cnt, file_op, 1);
+		}
 		else
 		{
 			attribute = "file";
 			file_size = file_info.size;
+#pragma region Filesize_iden
 			if (file_size < unit1)
 			{
 				unit = " Byte";
@@ -115,6 +135,7 @@ int files_Listing(string folder_name)
 				unit = " GB";
 				buffer << setprecision(1) << fixed << file_size;
 			}
+#pragma endregion
 			string file_sz = buffer.str();
 			if (stoi(file_sz) > 0)
 			{
@@ -125,7 +146,7 @@ int files_Listing(string folder_name)
 				content = to_string(files_cnt) + ". " + name_ + "\nFile Size: " +
 					file_sz + unit + "\nFile attribute: " + ext_ + "\n";
 				md_fileoperation(2, file_op, content);
-				if (ext_ != "md")
+				if (find(_extension1.begin(), _extension1.end(),ext_) != _extension1.end())
 				{
 					string thumbnail_ = thumbnail + "\\" + name_;
 					content = "<img src = \"" + thumbnail_ + "\" style=\"zoom:20%\" />";
@@ -137,8 +158,6 @@ int files_Listing(string folder_name)
 		}
 	} while (!_findnext(handle, &file_info));
 	_findclose(handle);
-	string summary = string("* Total Number of Files: ") + to_string(files_cnt) + string("\n------");
-	md_fileoperation(2, file_op, summary);
 	/*time_t nowtime;
 	nowtime = time(NULL);
 	char currentdate[255];
@@ -146,14 +165,6 @@ int files_Listing(string folder_name)
 	"%Y-%m-%d-%H-%M-%S", localtime(&nowtime));
 	summary = "<span name = \"" + string(currentdate) + "\"  > </span>\n";
 	md_fileoperation(2, file_op, summary);*/
-	file_op << "\n" << endl;
-	summary = "[TOC]";
-	md_fileoperation(2, file_op, summary);
-	file_op.close();
-	if (files_cnt == 0)
-	{
-		nRet = 0;
-	}
 	return nRet;
 }
 
@@ -193,6 +204,16 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	case 2:
 	{
 		file_operation << content << endl;
+		break;
+	}
+	case 3:
+	{
+		string summary = string("* Total Number of Files: ") + content + string("\n------");
+		file_operation << summary << endl;
+		file_operation << "\n" << endl;
+		summary = "[TOC]";
+		file_operation << summary << endl;
+		file_operation.close();
 		break;
 	}
 	default:
