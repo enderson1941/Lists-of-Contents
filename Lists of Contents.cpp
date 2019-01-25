@@ -146,10 +146,11 @@ int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_m
 				content = to_string(files_cnt) + ". " + name_ + "\nFile Size: " +
 					file_sz + unit + "\nFile attribute: " + ext_ + "\n";
 				md_fileoperation(2, file_op, content);
-				if (find(_extension1.begin(), _extension1.end(),ext_) != _extension1.end())
+				if (find(_extension1.begin(), _extension1.end(),ext_) != _extension1.end()
+					&& name_ == "poster." + ext_)
 				{
 					string thumbnail_ = thumbnail + "\\" + name_;
-					content = "<img src = \"" + thumbnail_ + "\" style=\"zoom:20%\" />";
+					content = "<img src = \"" + thumbnail_ + "\" style=\"zoom:35%\" />";
 					md_fileoperation(2, file_op, content);
 				}
 				content = "\n---";
