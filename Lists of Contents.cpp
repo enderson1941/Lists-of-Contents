@@ -37,7 +37,9 @@ int main()
 	default:
 		break;
 	}
-	md_fileoperation(3, file_op, to_string(files_cnt));
+	string address_("> * [Folder Path]("+ path_name+")");
+	md_fileoperation(3, file_op, address_);
+	md_fileoperation(4, file_op, to_string(files_cnt));
 	
 	system("pause");
 	return 0;
@@ -188,7 +190,7 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	{
 	case 0://initialize
 	{
-		info_data = "# [" + content + "](" + + " File-Lists Output";
+		info_data = "# " + content + " File-Lists Output";
 		file_operation << info_data << endl;
 		info_data = "## Created On: " + string(currentdate);
 		file_operation << info_data << endl;
@@ -213,7 +215,13 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	}
 	case 3:
 	{
-		string summary = string("* Total Number of Files: ") + content + string("\n------");
+		file_operation << "> Folder Info" << endl;
+		file_operation << content << endl;
+		break;
+	}
+	case 4:
+	{
+		string summary = string("> * Total Number of Files: ") + content + string("\n");
 		file_operation << summary << endl;
 		file_operation << "\n" << endl;
 		summary = "[TOC]";
