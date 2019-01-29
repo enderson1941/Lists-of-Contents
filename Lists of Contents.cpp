@@ -105,6 +105,9 @@ int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_m
 		if (file_info.attrib == _A_SUBDIR)
 		{
 			attribute = "dir";
+			content = "---\n[" + string(file_info.name) + 
+				"](" + thumbnail + "\\" + iden + ")\nAttribute: " + attribute + "\n";
+			md_fileoperation(2, file_op, content);
 			files_Listing(thumbnail + "\\" + iden, files_cnt, file_op, 1);
 		}
 		else
@@ -150,14 +153,15 @@ int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_m
 					&& name_ == "poster." + ext_)
 				{
 					string thumbnail_ = thumbnail + "\\" + name_;
-					content = "<img src = \"" + thumbnail_ + "\" style=\"zoom:35%\" />";
+					content = "<img src = \"" + thumbnail_ + "\" style=\"zoom:35%\" />\n";
 					md_fileoperation(2, file_op, content);
 				}
-				content = "\n---";
-				md_fileoperation(2, file_op, content);
+				/*content = "\n---";
+				md_fileoperation(2, file_op, content);*/
 			}
 		}
 	} while (!_findnext(handle, &file_info));
+	md_fileoperation(2, file_op, "---\n");
 	_findclose(handle);
 	/*time_t nowtime;
 	nowtime = time(NULL);
@@ -184,7 +188,7 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	{
 	case 0://initialize
 	{
-		info_data = "# " + content + " File-Lists Output";
+		info_data = "# [" + content + "](" + + " File-Lists Output";
 		file_operation << info_data << endl;
 		info_data = "## Created On: " + string(currentdate);
 		file_operation << info_data << endl;
