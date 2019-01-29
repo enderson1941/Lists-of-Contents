@@ -45,7 +45,8 @@ int main()
 	return 0;
 }
 
-int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_mode)
+int files_Listing(string folder_name, int& files_cnt, 
+	fstream& file_op, int op_mode)
 {
 	int nRet =0;
 	if (_access(folder_name.c_str(), 0) == -1)
@@ -215,13 +216,14 @@ bool md_fileoperation(int op, fstream& file_operation, string content)
 	}
 	case 3:
 	{
-		file_operation << "> Folder Info" << endl;
+		file_operation << "> **Folder Info**" << endl;
 		file_operation << content << endl;
 		break;
 	}
 	case 4:
 	{
-		string summary = string("> * Total Number of Files: ") + content + string("\n");
+		string summary = string("> * Total Number of Files: ") +
+			content + string("\n");
 		file_operation << summary << endl;
 		file_operation << "\n" << endl;
 		summary = "[TOC]";
