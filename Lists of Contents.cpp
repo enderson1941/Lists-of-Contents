@@ -152,6 +152,10 @@ int files_Listing(string folder_name, int& files_cnt,
 				content = to_string(files_cnt) + ". " + name_ + "\nFile Size: " +
 					file_sz + unit + "\nFile attribute: " + ext_ + "\n";
 				md_fileoperation(2, file_op, content);
+				//preview
+				content = "[Preview](" + thumbnail + "\\" + name_ +")\n";
+				md_fileoperation(2, file_op, content);
+				//
 				if (find(_extension1.begin(), _extension1.end(),ext_) != _extension1.end()
 					&& name_ == "poster." + ext_)
 				{
