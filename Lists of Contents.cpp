@@ -2,18 +2,23 @@
 //
 
 #include "stdafx.h"
+#include "resource.h"
 
 int files_Listing(string folder_name, int& files_cnt, fstream& file_op, int op_mode = 0);
 
 bool md_fileoperation(int op, fstream& file_operation, string content = "");
 
 
-
 int main()
 {
-	cout << "Please input absolute path of folder." << endl;
+	cout << "Please input absolute path of folder Or press . to exit.\n<dir> ";
 	string path_name;
 	cin >> path_name;
+	if (path_name == ".")
+	{
+		return 0;
+	}
+	bool sign = true;
 	fstream file_op(path_name);
 	int files_cnt = 0;
 	int nRet = files_Listing(path_name, files_cnt, file_op);//D:\github\spotlight_pic  D:\github\test
@@ -31,7 +36,18 @@ int main()
 	}
 	case 0://normally run
 	{
-		cout << "Output completed." << endl;
+		cout << "Output completed.\nOpen Output Folder, Y/N?" << endl;
+		string answer;
+		cin >> answer;
+		if (answer == "Y" || answer == "y")
+		{
+			ShellExecute(NULL, L"open", L"Output", NULL, NULL, SW_SHOWNORMAL);
+		}
+		else
+		{
+			sign = false;
+			cout << "Process terminated." << endl;
+		}
 		break;
 	}
 	default:
@@ -40,8 +56,10 @@ int main()
 	string address_("> * [Folder Path]("+ path_name+")");
 	md_fileoperation(3, file_op, address_);
 	md_fileoperation(4, file_op, to_string(files_cnt));
-	
-	system("pause");
+	if (!sign)
+	{
+		system("pause");
+	}
 	return 0;
 }
 
