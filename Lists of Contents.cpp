@@ -53,6 +53,11 @@ int main()
 	default:
 		break;
 	}
+	if (nRet != 0)
+	{
+		system("pause");
+		return 0;
+	}
 	string address_("> * [Folder Path]("+ path_name+")");
 	md_fileoperation(3, file_op, address_);
 	md_fileoperation(4, file_op, to_string(files_cnt));
