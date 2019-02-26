@@ -11,7 +11,8 @@ bool md_fileoperation(int op, fstream& file_operation, string content = "");
 
 int main()
 {
-	cout << "Please input absolute path of folder Or press . to exit.\n<dir> ";
+	cout << "Please input absolute path of folder \
+Or press . to exit.\ne.g C:\\temp\n\n<dir> ";
 	string path_name;
 	cin >> path_name;
 	if (path_name == ".")
@@ -68,7 +69,7 @@ int main()
 	return 0;
 }
 
-int files_Listing(string folder_name, int& files_cnt, 
+int files_Listing(string folder_name, int& files_cnt,
 	fstream& file_op, int op_mode)
 {
 	int nRet =0;
@@ -79,7 +80,7 @@ int files_Listing(string folder_name, int& files_cnt,
 	}
 	//define
 	vector<string> _extension1{ "jpg", "png", "pdf", "bmp", "gif", "tif", "Tiff", "psd" };
-	vector<string> _extension2{ "mp4", "avi", "mkv", "m2ts", "iso", 
+	vector<string> _extension2{ "mp4", "avi", "mkv", "m2ts", "iso",
 		"rmvb", "RMVB", "fov", "flv", "rm", "RM"};
 	const double unit1 = 1024.0f;//KB
 	const double unit2 = 1024.0f * 1024.0f;//MB
@@ -131,7 +132,7 @@ int files_Listing(string folder_name, int& files_cnt,
 		if (file_info.attrib == _A_SUBDIR)
 		{
 			attribute = "dir";
-			content = "---\n[" + string(file_info.name) + 
+			content = "---\n[" + string(file_info.name) +
 				"](" + thumbnail + "\\" + iden + ")\nAttribute: " + attribute + "\n";
 			md_fileoperation(2, file_op, content);
 			files_Listing(thumbnail + "\\" + iden, files_cnt, file_op, 1);
